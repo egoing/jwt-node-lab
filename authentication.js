@@ -33,30 +33,20 @@ exports.login = function(req, res){
     if (!username || !password || users[username].password !== password){
         return res.status(401).send()
     }
-    console.log(2);
     //use the payload to store information about the user such as username, user role, etc.
     let payload = {username: username}
 
     //create the access token with the shorter lifespan
+    console.log('process.env.ACCESS_TOKEN_LIFE', process.env.ACCESS_TOKEN_LIFE)
     let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
         algorithm: "HS256",
-        expiresIn: process.env.ACCESS_TOKEN_LIFE
-    })
-
-    let accessToken2 = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        algorithm: "HS256",
-        expiresIn: process.env.ACCESS_TOKEN_LIFE
-    })
-
-    let accessToken3 = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        algorithm: "HS256",
-        expiresIn: process.env.ACCESS_TOKEN_LIFE+60
+        expiresIn: Number(process.env.ACCESS_TOKEN_LIFE)
     })
 
     //create the refresh token with the longer lifespan
     let refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
         algorithm: "HS256",
-        expiresIn: process.env.REFRESH_TOKEN_LIFE
+        expiresIn: Number(process.env.REFRESH_TOKEN_LIFE)
     })
 
     //store the refresh token in the user array
